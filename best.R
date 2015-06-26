@@ -13,20 +13,23 @@ best <- function(state, outcome) {
                        11,             17,              23),
                      ncol=2)
 
-    ## check the parameters are valid
-    if !(outcome %in% lookup[,1]) {
+    ## check that the state and outcome are valid (stop if not)
+    if (!(outcome %in% lookup[,1])) {
         stop("invalid outcome")
     }
-    if !(state %in% df[,7]) {
+    if (!(state %in% df[,7])) {
         stop("invalid state")
     }
+
+    ## subset the data on interest (hospital name, state, outcome)
+    adata <- df[df$State==state,c(2,7,as.numeric(lookup[which(lookup[,1]==outcome),2]))]
+    names(adata) <- c("name","state","outcome")
+    ## get only the complete cases
+    cdata <- adata[adata$outcome!="Not Available",]
+    ## order data by outcome
+    odata <- cdata[order(as.numeric(cdata$outcome),cdata$name),]
     
-    ## rename the dataframe columns to be same as input parameter
-    names(df)[11] <- "HEART ATTACK"
-    names(df)[17] <- "HEART FAILURE"
-    names(df)[23] <- "PNEUMONIA"
-       
-    ## check that the state and outcome are valid (stop if not)
     ## return hospital name in the state with the lowest 30-day death rate
+    odata[1,1]
 }
 
